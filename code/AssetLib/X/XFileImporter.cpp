@@ -236,7 +236,9 @@ void XFileImporter::CreateMeshes(aiScene *pScene, aiNode *pNode, const std::vect
             unsigned int numVertices = 0;
             if (!sourceMesh->mFaceMaterials.empty()) {
                 // if there is a per-face material defined, select the faces with the corresponding material
-                for (unsigned int c = 0; c < sourceMesh->mFaceMaterials.size(); ++c) {
+                unsigned int numFaces = std::min((unsigned int)sourceMesh->mFaceMaterials.size(),
+                                                 (unsigned int)sourceMesh->mPosFaces.size());
+                for (unsigned int c = 0; c < numFaces; ++c) {
                     if (sourceMesh->mFaceMaterials[c] == b) {
                         faces.push_back(c);
                         numVertices += (unsigned int)sourceMesh->mPosFaces[c].mIndices.size();
