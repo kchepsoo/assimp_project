@@ -86,6 +86,9 @@ const aiImporterDesc *OFFImporter::GetInfo() const {
 static void NextToken(const char **car, const char *end) {
     SkipSpacesAndLineEnd(car, end);
     while (*car < end && (**car == '#' || **car == '\n' || **car == '\r')) {
+        if (**car == '#') {
+            ++(*car); // SkipLine treats '#' as a terminator; consume it first
+        }
         SkipLine(car, end);
         SkipSpacesAndLineEnd(car, end);
     }
