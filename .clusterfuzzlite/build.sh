@@ -41,5 +41,5 @@ $CXX ${CXXFLAGS:-} -std=c++17 \
   "$ASSIMP_LIB" \
   $(find build-fuzz -name '*.a' ! -name 'libassimp.a') \
   ${LIB_FUZZING_ENGINE:--fsanitize=fuzzer,address} \
-  -lz -lm -pthread \
+  -lm -pthread \
   -o "$OUT/assimp_fuzzer"
