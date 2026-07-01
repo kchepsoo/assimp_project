@@ -144,14 +144,14 @@ bool MD5Parser::ParseSection(Section &out) {
         ++buffer;
         if (buffer == bufferEnd) {
             return false;
-	    }
+        }
     }
     out.mName = std::string(sz, (uintptr_t)(buffer - sz));
     while (IsSpace(*buffer)) {
         ++buffer;
         if (buffer == bufferEnd) {
             return false;
-	    }
+        }
     }
 
     bool running = true;
@@ -161,14 +161,14 @@ bool MD5Parser::ParseSection(Section &out) {
             ++buffer;
             if (buffer == bufferEnd) {
                 return false;
-	        }
+            }
             bool run = true;
             while (run) {
                 while (IsSpaceOrNewLine(*buffer)) {
                     ++buffer;
                     if (buffer == bufferEnd) {
                         return false;
-		            }
+                    }
                 }
                 if ('\0' == *buffer) {
                     return false; // seems this was the last section
@@ -190,14 +190,14 @@ bool MD5Parser::ParseSection(Section &out) {
                     ++buffer;
                     if (buffer == bufferEnd) {
                         return false;
-		            }
+                    }
                 }
                 if (*buffer) {
                     ++lineNumber;
                     *buffer++ = '\0';
                     if (buffer == bufferEnd) {
                         return false;
-		            }
+                    }
                 }
             }
             break;
@@ -207,7 +207,7 @@ bool MD5Parser::ParseSection(Section &out) {
             while (!IsSpaceOrNewLine(*buffer++)) {
                 if (buffer == bufferEnd) {
                     return false;
-		        }
+                }
             }
             out.mGlobalValue = std::string(sz, (uintptr_t)(buffer - sz));
             continue;
@@ -220,7 +220,7 @@ bool MD5Parser::ParseSection(Section &out) {
     while (IsSpaceOrNewLine(*buffer)) {
         if (buffer == bufferEnd) {
             break;
-	    }
+        }
         ++buffer;
     }
     return '\0' != *buffer;
@@ -352,17 +352,26 @@ MD5MeshParser::MD5MeshParser(SectionArray &mSections) {
                 // numverts attribute
                 else if (TokenMatch(sz, "numverts", 8)) {
                     AI_MD5_SKIP_SPACES(&sz, elem.end, elem.iLineNumber);
-                    desc.mVertices.resize(strtoul10(sz));
+                    const unsigned int num = strtoul10(sz);
+                    if (num <= (*iter).mElements.size()) {
+                        desc.mVertices.resize(num);
+                    }
                 }
                 // numtris attribute
                 else if (TokenMatch(sz, "numtris", 7)) {
                     AI_MD5_SKIP_SPACES(&sz, elem.end, elem.iLineNumber);
-                    desc.mFaces.resize(strtoul10(sz));
+                    const unsigned int num = strtoul10(sz);
+                    if (num <= (*iter).mElements.size()) {
+                        desc.mFaces.resize(num);
+                    }
                 }
                 // numweights attribute
                 else if (TokenMatch(sz, "numweights", 10)) {
                     AI_MD5_SKIP_SPACES(&sz, elem.end, elem.iLineNumber);
-                    desc.mWeights.resize(strtoul10(sz));
+                    const unsigned int num = strtoul10(sz);
+                    if (num <= (*iter).mElements.size()) {
+                        desc.mWeights.resize(num);
+                    }
                 }
                 // vert attribute
                 // "vert 0 ( 0.394531 0.513672 ) 0 1"
@@ -395,13 +404,13 @@ MD5MeshParser::MD5MeshParser(SectionArray &mSections) {
                     const unsigned int idx = strtoul10(sz, &sz);
                     if (idx >= desc.mFaces.size()) {
                         desc.mFaces.resize(idx + 1);
-					}
+                    }
 
                     aiFace &face = desc.mFaces[idx];
                     if (face.mNumIndices != 3) {
-						delete [] face.mIndices;
-						face.mIndices = new unsigned int[face.mNumIndices = 3];
-					}
+                        delete [] face.mIndices;
+                        face.mIndices = new unsigned int[face.mNumIndices = 3];
+                    }
                     for (unsigned int i = 0; i < 3; ++i) {
                         AI_MD5_SKIP_SPACES(&sz, elem.end, elem.iLineNumber);
                         face.mIndices[i] = strtoul10(sz, &sz);
