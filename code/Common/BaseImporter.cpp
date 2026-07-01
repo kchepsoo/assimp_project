@@ -71,7 +71,7 @@ bool IsGcsVersion(const std::string &s) {
 
 // Removes a possible version hash from a filename, as found for example in
 // gcs uris (e.g. `gs://bucket/model.glb#1234`), see also
-// https://github.com/GoogleCloudPlatform/gsutil/blob/c80f329bc3c4011236c78ce8910988773b2606cb/gslib/storage_url.py#L39.
+// https://github.com/GoogleCloudPlatform/gsutil/blob/c80f329bc3c4011236c78ce8910988773b2606cb/gslib/storage_url.py#L39).
 std::string StripVersionHash(const std::string &filename) {
     const std::string::size_type pos = filename.find_last_of('#');
     // Only strip if the hash is behind a possible file extension and the part
@@ -394,7 +394,7 @@ void BaseImporter::ConvertToUTF8(std::vector<char> &data) {
 
         std::vector<char> output;
         auto *ptr = (uint32_t *)&data[0];
-        uint32_t *end = ptr + (data.size() / sizeof(uint32_t)) + 1;
+        uint32_t *end = ptr + (data.size() / sizeof(uint32_t));
         utf8::utf32to8(ptr, end, back_inserter(output));
         return;
     }
