@@ -197,7 +197,13 @@ Scope::Scope(Parser& parser,bool topLevel)
             ParseError("unexpected content: empty string.");
         }
 
-        auto *element = new_Element(*n, parser);
+        Element* element = static_cast<Element*>(allocator.Allocate(sizeof(Element)));
+        try {
+            new (element) Element(*n, parser);
+        } catch (...) {
+            element->~Element();
+            throw;
+        }
 
         // Element() should stop at the next Key token (or right after a Close token)
         n = parser.CurrentToken();
